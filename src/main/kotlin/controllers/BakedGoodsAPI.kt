@@ -1,33 +1,32 @@
 package controllers
 
-import models.bakedGoods
-import utils.Utilities
+import models.BakedGoods
 import utils.Utilities.isValidListIndex
 
 class BakedGoodsAPI {
-    private var bakedGoodsList = ArrayList<bakedGoods>()
+    private var BakedGoods = ArrayList<BakedGoods>()
 
-    fun add(bakedGoods: bakedGoods): Boolean {
-        return bakedGoodsList.add(bakedGoods)
+    fun add(bakedGoods: BakedGoods): Boolean {
+        return BakedGoods.add(bakedGoods)
     }
 
-    fun deleteBakedGood(indexToDelete: Int): bakedGoods? {
-        return if (isValidListIndex(indexToDelete, bakedGoodsList)) {
-            bakedGoodsList.removeAt(indexToDelete)
+    fun deleteBakedGood(indexToDelete: Int): BakedGoods? {
+        return if (isValidListIndex(indexToDelete, BakedGoods)) {
+            BakedGoods.removeAt(indexToDelete)
         } else null
     }
 
-    fun findBakedGoods(index: Int): bakedGoods? {
+    fun findBakedGoods(index: Int): BakedGoods? {
         return if (isValidIndex(index)) {
-            bakedGoodsList[index]
+            BakedGoods[index]
         } else null
     }
 
     fun isValidIndex(index: Int): Boolean {
-        return isValidListIndex(index, bakedGoodsList)
+        return isValidListIndex(index, BakedGoods)
     }
 
-    fun updateBakedGood(indexToUpdate: Int, updatedBakedGoods: bakedGoods?): Boolean {
+    fun updateBakedGood(indexToUpdate: Int, updatedBakedGoods: BakedGoods?): Boolean {
         val foundBakedGoods = findBakedGoods(indexToUpdate)
 
         if ((foundBakedGoods != null) && (updatedBakedGoods != null)) {
@@ -35,7 +34,7 @@ class BakedGoodsAPI {
             foundBakedGoods.productName = updatedBakedGoods.productName
             foundBakedGoods.productDesc = updatedBakedGoods.productDesc
             foundBakedGoods.productPrice = updatedBakedGoods.productPrice
-            foundBakedGoods.category = updatedBakedGoods.category
+            foundBakedGoods.productCategory = updatedBakedGoods.productCategory
             foundBakedGoods.refrigeratedOrNot = updatedBakedGoods.refrigeratedOrNot
             return true
         }
@@ -43,11 +42,41 @@ class BakedGoodsAPI {
         return false
     }
 
-    private fun formatListString(bakedGoodsToFormat: List<bakedGoods>): String =
+    fun listBakedGoodsByCategory(category: String): String =
+        if (BakedGoods.isEmpty()) "No products stored"
+        else {
+            val filteredBakedGoods =
+                formatListString(BakedGoods.filter { it.productCategory.equals(category, ignoreCase = true) })
+            if (filteredBakedGoods.isBlank()) "No products with category: $category"
+            else "${numberOfBakedGoodsByCategory(category)} baked goods with category $category: $filteredBakedGoods"
+        }
+
+    fun listAllBakedGoods(): String =
+        if (BakedGoods.isEmpty()) "No baked goods stored"
+        else formatListString(BakedGoods)
+
+    fun numberOfBakedGoods(): Int {
+        return BakedGoods.size
+    }
+
+
+    private fun formatListString(bakedGoodsToFormat: List<BakedGoods>): String =
         bakedGoodsToFormat
             .joinToString(separator = "\n") { bakedGoods ->
-                bakedGoodsList.indexOf(bakedGoods).toString() + ": " + bakedGoods.toString()
+                "${bakedGoodsToFormat.indexOf(bakedGoods)}: ${bakedGoods.toString()}"
             }
 
+    fun searchByProductName(searchString: String): String =
+        formatListString(
+            BakedGoods.filter { BakedGoods -> BakedGoods.productName.contains(searchString, ignoreCase = true)
+            }
+        )
 
+
+
+
+    fun numberOfBakedGoodsByCategory(category: String): Int =
+        BakedGoods.count { it.productCategory.equals(category, ignoreCase = true) }
 }
+
+

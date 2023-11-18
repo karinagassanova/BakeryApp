@@ -1,10 +1,10 @@
 package models
 
-class bakedGoods(
+class BakedGoods(
     var productId: Int,
     var productName: String,
     var productDesc: String,
     var productPrice: Double,
-    var category: String,
+    var productCategory: String,
     var refrigeratedOrNot: Boolean = false
 )
