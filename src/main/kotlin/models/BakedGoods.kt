@@ -7,4 +7,6 @@ class BakedGoods(
     var productPrice: Double,
     var productCategory: String,
     var refrigeratedOrNot: Boolean = false
-)
+){
+    constructor() : this(0,"","", 0.0, "", false)
+}

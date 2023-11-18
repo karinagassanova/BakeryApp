@@ -4,9 +4,11 @@ import mu.KotlinLogging
 import utils.ScannerInput.readNextInt
 import utils.ScannerInput.readNextLine
 import java.lang.System.exit
+import persistence.YamlSerializer
+import java.io.File
 
 private val logger = KotlinLogging.logger {}
-private val bakedGoodsAPI = BakedGoodsAPI()  // Declare at a higher level
+private val bakedGoodsAPI = BakedGoodsAPI(YamlSerializer(File("bakedgoods.yaml")))
 
 fun main(args: Array<String>) {
     runMenu()
@@ -86,7 +88,7 @@ fun updateBakedGood() {
             val productName = readNextLine("Enter the name of the product: ")
             val productDesc = readNextLine("Enter the description of the product: ")
             val productPrice = readNextInt("Enter the price of the product: ")
-            val category = readNextLine("Enter the category of the product: ")
+            val category = readNextLine("Enter the category of the product (cake, bun, bread) : ")
             val refrigeratedOrNot = readNextLine("Enter if the baked good is refrigerated or not (yes, no): ")
 
             val updatedBakedGoods = BakedGoods(
@@ -128,4 +130,20 @@ fun deleteBakedGood() {
 fun exitApp(){
     println("exitApp() function invoked")
     exit(0)
+}
+fun save() {
+    try {
+        bakedGoodsAPI.store()
+    } catch (e: Exception) {
+        System.err.println("Error writing to file: $e")
+    }
+}
+
+fun load() {
+    try {
+        bakedGoodsAPI.load()
+        println("Products loaded successfully.")
+    } catch (e: Exception) {
+        println("Error reading from file: $e")
+    }
 }
