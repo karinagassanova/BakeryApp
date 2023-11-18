@@ -1,6 +1,6 @@
 package models
 
-class BakedGoods(
+class bakedGoods(
     var productId: Int,
     var productName: String,
     var productDesc: String,
