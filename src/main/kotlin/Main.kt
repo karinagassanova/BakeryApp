@@ -1,14 +1,14 @@
 import controllers.BakedGoodsAPI
 import models.BakedGoods
 import mu.KotlinLogging
+import persistence.JSONSerializer
 import utils.ScannerInput.readNextInt
 import utils.ScannerInput.readNextLine
 import java.lang.System.exit
-import persistence.YamlSerializer
 import java.io.File
 
 private val logger = KotlinLogging.logger {}
-private val bakedGoodsAPI = BakedGoodsAPI(YamlSerializer(File("bakedgoods.yaml")))
+private val bakedGoodsAPI = BakedGoodsAPI(JSONSerializer(File("bakedgoods.json")))
 
 fun main(args: Array<String>) {
     runMenu()
@@ -21,6 +21,8 @@ fun runMenu() {
             1 -> addBakedGood()
             2 -> deleteBakedGood()
             3 -> updateBakedGood()
+            4 -> load()
+            5 -> save()
             0 -> exitApp()
             else -> System.out.println("Invalid option entered: $option")
         }

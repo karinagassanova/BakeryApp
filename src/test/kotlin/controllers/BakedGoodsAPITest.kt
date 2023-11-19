@@ -2,7 +2,7 @@ package controllers
 import models.BakedGoods
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
-import persistence.YamlSerializer
+import persistence.JSONSerializer
 import java.io.File
 import java.util.*
 
@@ -13,8 +13,8 @@ class BakedGoodsAPITest {
     private var carrotCake: BakedGoods? = null
     private var cinnamonBuns: BakedGoods? = null
     private var lemonCake: BakedGoods? = null
-    private var populatedNotes: BakedGoodsAPI? = BakedGoodsAPI(YamlSerializer(File("bakedgoods.yaml")))
-    private var emptyNotes: BakedGoodsAPI? = BakedGoodsAPI(YamlSerializer(File("bakedgoods.yaml")))
+    private var populatedNotes: BakedGoodsAPI? = BakedGoodsAPI(JSONSerializer(File("bakedgoods.json")))
+    private var emptyNotes: BakedGoodsAPI? = BakedGoodsAPI(JSONSerializer(File("bakedgoods.json")))
 
     @BeforeEach
     fun setup() {
@@ -41,28 +41,26 @@ class BakedGoodsAPITest {
         lemonCake = null
     }
 
+@Nested
+inner class PersistenceTests {
+    @Test
+    fun `saving and loading an loaded collection in JSON doesn't loose data`() {
+        // Storing 3 notes to the notes.json file.
+        val storingBakedGoods = BakedGoodsAPI(JSONSerializer(File("bakedgoods.json")))
+        storingBakedGoods.add(carrotCake!!)
+        storingBakedGoods.add(blueberryMuffin!!)
+        storingBakedGoods.add(sourdoughBread!!)
+        storingBakedGoods.store()
 
-    @Nested
-    inner class PersistenceTests {
-        @Test
-        fun `saving and loading an loaded collection in YAML doesn't loose data`() {
-            // Storing 3 notes to the notes.YAML file.
-            val storingBakedGoods = BakedGoodsAPI(YamlSerializer(File("bakedgoods.yaml")))
-            storingBakedGoods.add(blueberryMuffin!!)
-            storingBakedGoods.add(carrotCake!!)
-            storingBakedGoods.add(sourdoughBread!!)
-            storingBakedGoods.store()
+        val loadedBakedGoods = BakedGoodsAPI(JSONSerializer(File("bakedgoods.json")))
+        loadedBakedGoods.load()
 
-            val loadedBakedGoods = BakedGoodsAPI(YamlSerializer(File("bakedgoods.yaml")))
-            loadedBakedGoods.load()
-
-            assertEquals(3, storingBakedGoods.numberOfBakedGoods())
-            assertEquals(3, loadedBakedGoods.numberOfBakedGoods())
-            assertEquals(storingBakedGoods.numberOfBakedGoods(), loadedBakedGoods.numberOfBakedGoods())
-            assertEquals(storingBakedGoods.findBakedGoods(0), loadedBakedGoods.findBakedGoods(0))
-            assertEquals(storingBakedGoods.findBakedGoods(1), loadedBakedGoods.findBakedGoods(1))
-            assertEquals(storingBakedGoods.findBakedGoods(2), loadedBakedGoods.findBakedGoods(2))
-        }
-
+        assertEquals(3, storingBakedGoods.numberOfBakedGoods())
+        assertEquals(3, loadedBakedGoods.numberOfBakedGoods())
+        assertEquals(storingBakedGoods.numberOfBakedGoods(), loadedBakedGoods.numberOfBakedGoods())
+        assertEquals(storingBakedGoods.findBakedGoods(0), loadedBakedGoods.findBakedGoods(0))
+        assertEquals(storingBakedGoods.findBakedGoods(1), loadedBakedGoods.findBakedGoods(1))
+        assertEquals(storingBakedGoods.findBakedGoods(2), loadedBakedGoods.findBakedGoods(2))
     }
+}
 }
