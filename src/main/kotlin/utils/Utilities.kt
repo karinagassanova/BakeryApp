@@ -2,6 +2,8 @@
  * A utility class providing common functions for validation and list indexing.
  */
 package utils
+import models.Ingredient
+import models.BakedGoods
 
 object Utilities {
 
@@ -29,4 +31,13 @@ object Utilities {
     fun isValidListIndex(index: Int, list: List<Any>): Boolean {
         return (index >= 0 && index < list.size)
     }
+    @JvmStatic
+    fun formatListString(notesToFormat: List<BakedGoods>): String =
+        notesToFormat
+            .joinToString(separator = "\n") { bakedGoods ->  "$bakedGoods" }
+@JvmStatic
+fun formatSetString(itemsToFormat: MutableList<Ingredient>): String =
+    itemsToFormat
+        .joinToString(separator = "\n") { ingredients ->  "\t$ingredients" }
+
 }
