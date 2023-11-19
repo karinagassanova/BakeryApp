@@ -1,9 +1,12 @@
 package controllers
 
 import models.BakedGoods
+import persistence.Serializer
 import utils.Utilities.isValidListIndex
 
-class BakedGoodsAPI {
+class BakedGoodsAPI(serializerType: Serializer) {
+    private var serializer: Serializer = serializerType
+
     private var BakedGoods = ArrayList<BakedGoods>()
 
     fun add(bakedGoods: BakedGoods): Boolean {
@@ -65,6 +68,16 @@ class BakedGoodsAPI {
             .joinToString(separator = "\n") { bakedGoods ->
                 "${bakedGoodsToFormat.indexOf(bakedGoods)}: ${bakedGoods.toString()}"
             }
+    @Throws(Exception::class)
+    fun load() {
+        BakedGoods = serializer.read() as ArrayList<BakedGoods>
+    }
+
+    @Throws(Exception::class)
+    fun store() {
+        serializer.write(BakedGoods)
+    }
+
 
     fun searchByProductName(searchString: String): String =
         formatListString(
@@ -72,11 +85,6 @@ class BakedGoodsAPI {
             }
         )
 
-
-
-
     fun numberOfBakedGoodsByCategory(category: String): Int =
         BakedGoods.count { it.productCategory.equals(category, ignoreCase = true) }
 }
-
-
