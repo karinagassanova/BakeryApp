@@ -2,6 +2,7 @@ import controllers.BakedGoodsAPI
 import models.BakedGoods
 import mu.KotlinLogging
 import persistence.JSONSerializer
+import utils.ScannerInput.readNextDouble
 import utils.ScannerInput.readNextInt
 import utils.ScannerInput.readNextLine
 import java.lang.System.exit
@@ -11,7 +12,9 @@ private val logger = KotlinLogging.logger {}
 private val bakedGoodsAPI = BakedGoodsAPI(JSONSerializer(File("bakedgoods.json")))
 
 fun main(args: Array<String>) {
+    logger.info { "Starting the Bakery Application" }
     runMenu()
+    logger.info { "Exiting the Bakery Application" }
 }
 
 fun runMenu() {
@@ -44,6 +47,58 @@ fun mainMenu(): Int {
     )
 }
 
+fun listBakedGoods() {
+    if (bakedGoodsAPI.numberOfBakedGoods() > 0) {
+        val option = readNextInt(
+            """
+                >        ( "LIST OF BAKED GOODS")
+        
+                  > |   1) ("List ALL baked goods")           |
+                  > |   2) ("List Baked Goods by Category")   |
+                  > |   3) ("List Baked Goods by Price")      |
+                  > |   4) ("List Refrigerated Baked Goods")  |
+
+ 
+         > ==>> """.trimMargin(">"))
+
+        when (option) {
+            1 -> listAllBakedGoods()
+            2 -> listBakedGoodsByCategory()
+            3 -> listBakedGoodsByPrice()
+            4 -> listRefrigeratedBakedGoods()
+            else -> println("Invalid option entered: $option")
+        }
+    } else {
+        println("Option Invalid - No baked goods stored")
+    }
+}
+
+fun listBakedGoodsByCategory() {
+    val category = readNextLine("Enter the category to filter by: ")
+    val result = bakedGoodsAPI.listBakedGoodsByCategory(category)
+
+    if (result.isNotEmpty()) {
+        println(result)
+    } else {
+        logger.info { "No baked goods found in category: $category" }
+    }
+}
+
+fun listRefrigeratedBakedGoods() {
+    println(bakedGoodsAPI.listRefrigeratedBakedGoods())
+}
+fun listBakedGoodsByPrice() {
+    val minPrice = readNextDouble("Enter the minimum price: ")
+    val maxPrice = readNextDouble("Enter the maximum price: ")
+
+    val result = bakedGoodsAPI.listBakedGoodsByPriceRange(minPrice, maxPrice)
+
+    if (result.isNotEmpty()) {
+        println(result)
+    } else {
+        logger.info { "No baked goods found in the price range: $minPrice - $maxPrice" }
+    }
+}
 fun addBakedGood() {
     val productId = readNextInt("Enter the product ID: ")
     val productName = readNextLine("Enter the name of the product: ")

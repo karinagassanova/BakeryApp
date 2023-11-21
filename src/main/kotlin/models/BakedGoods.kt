@@ -3,14 +3,14 @@ package models
 import utils.Utilities
 
 data class BakedGoods(
-    var productId: Int,
+    var productId: Int = 0,
     var productName: String,
     var productDesc: String,
     var productPrice: Double,
     var productCategory: String,
     var refrigeratedOrNot: Boolean = false,
-    var ingredients: MutableList<Ingredient> = mutableListOf()
-) {
+    var ingredients: MutableList<Ingredient> = mutableListOf())
+{
     private var lastIngredientId = 0
     private fun getIngredientId() = lastIngredientId++
 
