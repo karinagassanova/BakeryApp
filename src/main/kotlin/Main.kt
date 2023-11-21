@@ -24,8 +24,9 @@ fun runMenu() {
             1 -> addBakedGood()
             2 -> deleteBakedGood()
             3 -> updateBakedGood()
-            4 -> load()
-            5 -> save()
+            4 -> listBakedGoods()
+            5 -> load()
+            6 -> save()
             0 -> exitApp()
             else -> System.out.println("Invalid option entered: $option")
         }
@@ -41,6 +42,11 @@ fun mainMenu(): Int {
          ("Bakery MENU")
          
         | 1) ("Add a Baked Good")
+        > 2) ("Delete a Baked Good")
+        > 3) ("Update a Baked Good")
+        > 4) ("List Baked Goods")
+        > 5) ("Load Baked Goods")
+        > 6) ("Save Baked Goods")
         | 0) ("Exit")
         
          > ==>> """.trimMargin(">")
