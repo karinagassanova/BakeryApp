@@ -3,6 +3,7 @@ import models.BakedGoods
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
 import persistence.JSONSerializer
+import utils.CategoryUtility
 import java.io.File
 import java.util.*
 
@@ -13,8 +14,8 @@ class BakedGoodsAPITest {
     private var carrotCake: BakedGoods? = null
     private var cinnamonBuns: BakedGoods? = null
     private var lemonCake: BakedGoods? = null
-    private var populatedNotes: BakedGoodsAPI? = BakedGoodsAPI(JSONSerializer(File("bakedgoods.json")))
-    private var emptyNotes: BakedGoodsAPI? = BakedGoodsAPI(JSONSerializer(File("bakedgoods.json")))
+    private var populatedBakedGoods: BakedGoodsAPI? = BakedGoodsAPI(JSONSerializer(File("bakedgoods.json")))
+    private var emptyBakedGoods: BakedGoodsAPI? = BakedGoodsAPI(JSONSerializer(File("bakedgoods.json")))
 
     @BeforeEach
     fun setup() {
@@ -25,11 +26,11 @@ class BakedGoodsAPITest {
         cinnamonBuns = BakedGoods(4, "Cinnamon Buns", "Sweet and gooey cinnamon buns", 8.99, "Bun", true)
         lemonCake = BakedGoods(5, "Lemon Cake", "Zesty lemon-flavored cake", 12.99, "Cake", false)
 
-        populatedNotes!!.add(blueberryMuffin!!)
-        populatedNotes!!.add(sourdoughBread!!)
-        populatedNotes!!.add(carrotCake!!)
-        populatedNotes!!.add(cinnamonBuns!!)
-        populatedNotes!!.add(lemonCake!!)
+        populatedBakedGoods!!.add(blueberryMuffin!!)
+        populatedBakedGoods!!.add(sourdoughBread!!)
+        populatedBakedGoods!!.add(carrotCake!!)
+        populatedBakedGoods!!.add(cinnamonBuns!!)
+        populatedBakedGoods!!.add(lemonCake!!)
     }
 
     @AfterEach
@@ -41,26 +42,119 @@ class BakedGoodsAPITest {
         lemonCake = null
     }
 
-@Nested
-inner class PersistenceTests {
-    @Test
-    fun `saving and loading an loaded collection in JSON doesn't loose data`() {
-        // Storing 3 notes to the notes.json file.
-        val storingBakedGoods = BakedGoodsAPI(JSONSerializer(File("bakedgoods.json")))
-        storingBakedGoods.add(carrotCake!!)
-        storingBakedGoods.add(blueberryMuffin!!)
-        storingBakedGoods.add(sourdoughBread!!)
-        storingBakedGoods.store()
+    @Nested
+    inner class PersistenceTests {
+        @Test
+        fun `saving and loading an loaded collection in JSON doesn't loose data`() {
+            // Storing 3 notes to the notes.json file.
+            val storingBakedGoods = BakedGoodsAPI(JSONSerializer(File("bakedgoods.json")))
+            storingBakedGoods.add(carrotCake!!)
+            storingBakedGoods.add(blueberryMuffin!!)
+            storingBakedGoods.add(sourdoughBread!!)
+            storingBakedGoods.store()
 
-        val loadedBakedGoods = BakedGoodsAPI(JSONSerializer(File("bakedgoods.json")))
-        loadedBakedGoods.load()
+            val loadedBakedGoods = BakedGoodsAPI(JSONSerializer(File("bakedgoods.json")))
+            loadedBakedGoods.load()
 
-        assertEquals(3, storingBakedGoods.numberOfBakedGoods())
-        assertEquals(3, loadedBakedGoods.numberOfBakedGoods())
-        assertEquals(storingBakedGoods.numberOfBakedGoods(), loadedBakedGoods.numberOfBakedGoods())
-        assertEquals(storingBakedGoods.findBakedGoods(0), loadedBakedGoods.findBakedGoods(0))
-        assertEquals(storingBakedGoods.findBakedGoods(1), loadedBakedGoods.findBakedGoods(1))
-        assertEquals(storingBakedGoods.findBakedGoods(2), loadedBakedGoods.findBakedGoods(2))
+            assertEquals(3, storingBakedGoods.numberOfBakedGoods())
+            assertEquals(3, loadedBakedGoods.numberOfBakedGoods())
+            assertEquals(storingBakedGoods.numberOfBakedGoods(), loadedBakedGoods.numberOfBakedGoods())
+            assertEquals(storingBakedGoods.findBakedGoods(0), loadedBakedGoods.findBakedGoods(0))
+            assertEquals(storingBakedGoods.findBakedGoods(1), loadedBakedGoods.findBakedGoods(1))
+            assertEquals(storingBakedGoods.findBakedGoods(2), loadedBakedGoods.findBakedGoods(2))
+        }
     }
-}
+
+
+    @Nested
+    inner class AddBakedGoods {
+
+        @Test
+        // Test that adding a baked good to a populated list increases the count and the new baked good is added.
+        fun `adding a BakedGood to a populated list adds to ArrayList`() {
+            val newBakedGood = BakedGoods(1, "Chocolate Cake", "Delicious chocolate cake", 10.99, "Dessert", true)
+            assertEquals(5, populatedBakedGoods!!.numberOfBakedGoods())
+            assertTrue(populatedBakedGoods!!.add(newBakedGood))
+            assertEquals(6, populatedBakedGoods!!.numberOfBakedGoods())
+            assertEquals(
+                newBakedGood,
+                populatedBakedGoods!!.findBakedGoods(populatedBakedGoods!!.numberOfBakedGoods() - 1)
+            )
+        }
+
+        @Test
+        // Test that adding a baked good to an empty list increases the count and the new baked good is added.
+        fun `adding a BakedGood to an empty list adds to ArrayList`() {
+            val newBakedGood = BakedGoods(1, "Chocolate Cake", "Delicious chocolate cake", 10.99, "Dessert", true)
+            assertEquals(0, emptyBakedGoods!!.numberOfBakedGoods())
+            assertTrue(emptyBakedGoods!!.add(newBakedGood))
+            assertEquals(1, emptyBakedGoods!!.numberOfBakedGoods())
+            assertEquals(newBakedGood, emptyBakedGoods!!.findBakedGoods(emptyBakedGoods!!.numberOfBakedGoods() - 1))
+        }
+    }
+
+    @Nested
+    inner class ListBakedGoods {
+
+        @Test
+        fun `listRefrigeratedBakedGoods returns refrigerated baked goods when ArrayList has them`() {
+            val refrigeratedBakedGoodsString = populatedBakedGoods!!.listRefrigeratedBakedGoods().lowercase()
+            assertFalse(refrigeratedBakedGoodsString.contains("no refrigerated baked goods"))
+        }
+
+        @Test
+        fun `listNonRefrigeratedBakedGoods returns non-refrigerated baked goods when ArrayList has them`() {
+            val nonRefrigeratedBakedGoodsString = populatedBakedGoods!!.listNonRefrigeratedBakedGoods().lowercase()
+            assertFalse(nonRefrigeratedBakedGoodsString.contains("no non-refrigerated baked goods"))
+        }
+
+        @Test
+        fun `listBakedGoodsByPriceRange returns baked goods in the specified price range`() {
+            val minPrice = 5.0
+            val maxPrice = 15.0
+            val result = populatedBakedGoods!!.listBakedGoodsByPriceRange(minPrice, maxPrice)
+            assertFalse(result.contains("no baked goods found"))
+        }
+
+        @Test
+        fun `listBakedGoodsByCategory returns baked goods with the specified category`() {
+            val category = "Cakes"
+            val result = populatedBakedGoods!!.listBakedGoodsByCategory(category)
+            assertFalse(result.contains("no products with category"))
+        }
+
+        @Test
+        fun `listAllBakedGoods returns all baked goods when ArrayList is not empty`() {
+            val result = populatedBakedGoods!!.listAllBakedGoods()
+            assertFalse(result.contains("no baked goods stored"))
+        }
+
+        @Test
+        fun `numberOfBakedGoods returns the correct count of baked goods`() {
+            assertEquals(5, populatedBakedGoods!!.numberOfBakedGoods())
+        }
+
+        @Test
+        fun `searchByProductName returns baked goods with matching product name`() {
+            val searchString = "Chocolate"
+            val result = populatedBakedGoods!!.searchByProductName(searchString)
+            assertFalse(result.contains("no products found"))
+        }
+        @Test
+        // Test that the isValidCategory function returns true when the category exists.
+        fun isValidCategoryTrueWhenCategoryExists() {
+            Assertions.assertTrue(CategoryUtility.isValidCategory("Home"))
+            Assertions.assertTrue(CategoryUtility.isValidCategory("home"))
+            Assertions.assertTrue(CategoryUtility.isValidCategory("COLLEGE"))
+        }
+
+        @Test
+        // Test that the isValidCategory function returns false when the category does not exist.
+        fun isValidCategoryFalseWhenCategoryDoesNotExist() {
+            Assertions.assertFalse(CategoryUtility.isValidCategory("Hom"))
+            Assertions.assertFalse(CategoryUtility.isValidCategory("colllege"))
+            Assertions.assertFalse(CategoryUtility.isValidCategory(""))
+        }
+
+    }
 }

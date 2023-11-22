@@ -6,6 +6,7 @@ import utils.Utilities.formatListString
 import utils.Utilities.isValidListIndex
 
 class BakedGoodsAPI(serializerType: Serializer) {
+
     private var serializer: Serializer = serializerType
 
     private var bakedGoodsList = ArrayList<BakedGoods>()
@@ -52,6 +53,14 @@ class BakedGoodsAPI(serializerType: Serializer) {
             formatListString(refrigeratedBakedGoods)
         } else {
             "No refrigerated baked goods found."
+        }
+    }
+    fun listNonRefrigeratedBakedGoods(): String {
+        val nonRefrigeratedBakedGoods = bakedGoodsList.filter { !it.refrigeratedOrNot }
+        return if (nonRefrigeratedBakedGoods.isNotEmpty()) {
+            formatListString(nonRefrigeratedBakedGoods)
+        } else {
+            "No non-refrigerated baked goods found."
         }
     }
 
@@ -104,4 +113,11 @@ class BakedGoodsAPI(serializerType: Serializer) {
 
     fun numberOfBakedGoodsByCategory(category: String): Int =
         bakedGoodsList.count { it.productCategory.equals(category, ignoreCase = true) }
+}
+
+fun numberOfRefrigeratedBakedGoods(bakedGoodsList: List<BakedGoods>): Int {
+    return bakedGoodsList.count { it.refrigeratedOrNot }
+}
+fun numberOfNonRefrigeratedBakedGoods(bakedGoodsList: List<BakedGoods>): Int {
+    return bakedGoodsList.count { !it.refrigeratedOrNot }
 }
