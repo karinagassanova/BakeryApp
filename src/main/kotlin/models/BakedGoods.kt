@@ -9,8 +9,7 @@ data class BakedGoods(
     var productPrice: Double,
     var productCategory: String,
     var refrigeratedOrNot: Boolean = false,
-    var ingredients: MutableList<Ingredient> = mutableListOf())
-{
+    var ingredients: MutableList<Ingredient> = mutableListOf()) {
     private var lastIngredientId = 0
     private fun getIngredientId() = lastIngredientId++
 
@@ -48,15 +47,15 @@ data class BakedGoods(
         else Utilities.formatSetString(ingredients)
 
     override fun toString(): String {
-        return """
-            Product ID: $productId
-            Product Name: $productName
-            Product Description: $productDesc
-            Product Price: $productPrice
-            Product Category: $productCategory
-            Refrigerated: $refrigeratedOrNot
-            Ingredients:
-            ${listIngredients()}
-        """.trimIndent()
+        val refrigerated = if (refrigeratedOrNot) 'Y' else 'N'
+        return "Product ID: $productId\n" +
+                "Product Name: $productName\n" +
+                "Product Description: $productDesc\n" +
+                "Product Price: $productPrice\n" +
+                "Product Category: $productCategory\n" +
+                "Refrigerated: $refrigerated\n" +
+                "Ingredients:\n" +
+                listIngredients()
     }
 }
+

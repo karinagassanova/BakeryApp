@@ -11,6 +11,17 @@ class BakedGoodsAPI(serializerType: Serializer) {
 
     private var bakedGoodsList = ArrayList<BakedGoods>()
 
+
+    @Throws(Exception::class)
+    fun load() {
+        bakedGoodsList = serializer.read() as ArrayList<BakedGoods>
+    }
+
+    @Throws(Exception::class)
+    fun store() {
+        serializer.write(bakedGoodsList)
+    }
+
     fun add(bakedGoods: BakedGoods): Boolean {
         return bakedGoodsList.add(bakedGoods)
     }
@@ -46,7 +57,17 @@ class BakedGoodsAPI(serializerType: Serializer) {
 
         return false
     }
+    // ------------------------
+// SEARCHING METHODS
+// ------------------------
+    fun searchByProductName(searchString: String): String =
+        formatListString(
+            bakedGoodsList.filter { bakedGoods -> bakedGoods.productName.contains(searchString, ignoreCase = true) }
+        )
 
+    // ---------------------
+    // LISTING METHODS FOR BAKEDGOODS ArrayList
+    // ---------------------
     fun listRefrigeratedBakedGoods(): String {
         val refrigeratedBakedGoods = bakedGoodsList.filter { it.refrigeratedOrNot }
         return if (refrigeratedBakedGoods.isNotEmpty()) {
@@ -86,9 +107,24 @@ class BakedGoodsAPI(serializerType: Serializer) {
         if (bakedGoodsList.isEmpty()) "No baked goods stored"
         else formatListString(bakedGoodsList)
 
+    // -------------------------
+    // COUNTING METHODS FOR BAKEDGOODS ArrayList
+    // --------------------------
     fun numberOfBakedGoods(): Int {
         return bakedGoodsList.size
     }
+    fun numberOfBakedGoodsByCategory(category: String): Int =
+        bakedGoodsList.count { it.productCategory.equals(category, ignoreCase = true) }
+}
+
+
+fun numberOfRefrigeratedBakedGoods(bakedGoodsList: List<BakedGoods>): Int {
+        return bakedGoodsList.count { it.refrigeratedOrNot }
+    }
+    fun numberOfNonRefrigeratedBakedGoods(bakedGoodsList: List<BakedGoods>): Int {
+        return bakedGoodsList.count { !it.refrigeratedOrNot }
+    }
+
 
     private fun formatListString(bakedGoodsToFormat: List<BakedGoods>): String =
         bakedGoodsToFormat
@@ -96,28 +132,5 @@ class BakedGoodsAPI(serializerType: Serializer) {
                 "${bakedGoodsToFormat.indexOf(bakedGoods)}: ${bakedGoods.toString()}"
             }
 
-    @Throws(Exception::class)
-    fun load() {
-        bakedGoodsList = serializer.read() as ArrayList<BakedGoods>
-    }
 
-    @Throws(Exception::class)
-    fun store() {
-        serializer.write(bakedGoodsList)
-    }
 
-    fun searchByProductName(searchString: String): String =
-        formatListString(
-            bakedGoodsList.filter { bakedGoods -> bakedGoods.productName.contains(searchString, ignoreCase = true) }
-        )
-
-    fun numberOfBakedGoodsByCategory(category: String): Int =
-        bakedGoodsList.count { it.productCategory.equals(category, ignoreCase = true) }
-}
-
-fun numberOfRefrigeratedBakedGoods(bakedGoodsList: List<BakedGoods>): Int {
-    return bakedGoodsList.count { it.refrigeratedOrNot }
-}
-fun numberOfNonRefrigeratedBakedGoods(bakedGoodsList: List<BakedGoods>): Int {
-    return bakedGoodsList.count { !it.refrigeratedOrNot }
-}

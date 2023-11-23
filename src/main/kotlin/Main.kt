@@ -5,8 +5,10 @@ import persistence.JSONSerializer
 import utils.ScannerInput.readNextDouble
 import utils.ScannerInput.readNextInt
 import utils.ScannerInput.readNextLine
+import utils.ScannerInput.readNextChar
 import java.lang.System.exit
 import java.io.File
+import models.Ingredient
 
 private val logger = KotlinLogging.logger {}
 private val bakedGoodsAPI = BakedGoodsAPI(JSONSerializer(File("bakedgoods.json")))
@@ -178,14 +180,100 @@ fun deleteBakedGood() {
     logger.info { "deleteBakedGood() function invoked" }
     listAllBakedGoods()
     if (bakedGoodsAPI.numberOfBakedGoods() > 0) {
-        // only ask the user to choose the baked good to delete if baked goods exist
+
         val indexToDelete = readNextInt("Enter the index of the baked good to delete: ")
-        // pass the index of the baked good to BakedGoodsAPI for deleting and check for success.
         val bakedGoodToDelete = bakedGoodsAPI.deleteBakedGood(indexToDelete)
         if (bakedGoodToDelete != null) {
             logger.info { "Delete Successful! Deleted baked good: ${bakedGoodToDelete.productName}" }
         } else {
             logger.warn { "Delete NOT Successful" }
+        }
+    }
+}
+
+/*
+INGREDIENTS
+ */
+
+private fun addIngredientToBakedGood() {
+    val bakedGood: BakedGoods? = askUserToChooseBakedGood()
+    if (bakedGood != null) {
+        val ingredientId = readNextInt("\t Enter the ingredient ID: ")
+        val ingredientName = readNextLine("\t Enter the ingredient name: ")
+        val ingredientQuantity = readNextDouble("\t Enter the quantity: ")
+        val ingredientDescription = readNextLine("\t Enter the ingredient description: ")
+        val allergens = readNextLine("\t Enter the allergens (comma-separated): ").split(",").map { it.trim() }.toSet()
+
+        val ingredient = Ingredient(
+            ingredientId = ingredientId,
+            ingredientName = ingredientName,
+            ingredientQuantity = ingredientQuantity,
+            ingredientDescription = ingredientDescription,
+            allergens = allergens
+        )
+
+        if (bakedGood.addIngredient(ingredient)) {
+            println("Add Successful!")
+        } else {
+            println("Add NOT Successful")
+        }
+    }
+}
+fun markIngredientAllergens() {
+    val bakedGood: BakedGoods? = askUserToChooseBakedGood()
+    if (bakedGood != null) {
+        val ingredient: Ingredient? = askUserToChooseIngredient(bakedGood)
+        if (ingredient != null) {
+            var changeAllergenStatus = 'X'
+            if (ingredient.allergens.isNotEmpty()) {
+                changeAllergenStatus = readNextChar("This ingredient contains allergens...do you want to remove them?")
+                if (changeAllergenStatus.equals('Y', ignoreCase = true)) {
+                    ingredient.allergens = emptySet()
+                    println("Allergens removed.")
+                }
+            } else {
+                changeAllergenStatus = readNextChar("This ingredient is currently allergen-free...do you want to add allergens?")
+                if (changeAllergenStatus.equals('Y', ignoreCase = true)) {
+                    val newAllergens = readNextLine("Enter allergens (comma-separated): ")
+                        .split(",").map { it.trim() }.toSet()
+                    ingredient.allergens = newAllergens
+                    println("Allergens added.")
+                }
+            }
+        }
+    }
+}
+
+private fun updateIngredientQuantityInBakedGood() {
+    val bakedGood = askUserToChooseBakedGood()
+    val ingredient = bakedGood?.let { askUserToChooseIngredient(it) }
+
+    if (bakedGood != null && ingredient != null) {
+        val newQuantity = readNextDouble("Enter new quantity: ")
+
+        if (bakedGood.updateIngredient(ingredient.ingredientId,
+                Ingredient(ingredient.ingredientId, ingredient.ingredientName, newQuantity,
+                    ingredient.ingredientDescription, ingredient.allergens))) {
+            println("Ingredient quantity updated successfully")
+        } else {
+            println("Failed to update ingredient quantity")
+        }
+    } else {
+        println("Invalid Baked Good or Ingredient")
+    }
+}
+
+fun deleteIngredientFromBakedGood() {
+    val bakedGood: BakedGoods? = askUserToChooseBakedGood()
+    if (bakedGood != null) {
+        val ingredient: Ingredient? = askUserToChooseIngredient(bakedGood)
+        if (ingredient != null) {
+            val isDeleted = bakedGood.deleteIngredient(ingredient.ingredientId)
+            if (isDeleted) {
+                println("Delete Successful!")
+            } else {
+                println("Delete NOT Successful")
+            }
         }
     }
 }
@@ -210,3 +298,46 @@ fun load() {
         println("Error reading from file: $e")
     }
 }
+ /*
+ HELPER FUNCTIONS
+  */
+ private fun askUserToChooseBakedGood(): BakedGoods? {
+     listAllBakedGoods()
+
+     if (bakedGoodsAPI.numberOfBakedGoods() > 0) {
+         val productId = readNextInt("\nEnter the product ID of the baked good: ")
+         val bakedGood = bakedGoodsAPI.findBakedGoods(productId)
+
+         if (bakedGood != null) {
+             return bakedGood
+         } else {
+             println("Baked good with ID $productId not found.")
+         }
+     } else {
+         println("No baked goods available.")
+     }
+
+     return null
+ }
+
+private fun askUserToChooseIngredient(bakedGood: BakedGoods): Ingredient? {
+    if (bakedGood.numberOfIngredients() > 0) {
+        println(bakedGood.listIngredients())
+        val ingredientId = readNextInt("\nEnter the ID of the ingredient: ")
+        val ingredient = bakedGood.findIngredient(ingredientId)
+
+        if (ingredient != null) {
+            return ingredient
+        } else {
+            println("Ingredient with ID $ingredientId not found.")
+        }
+    } else {
+        println("No ingredients available for the chosen baked good.")
+    }
+
+    return null
+}
+
+// ---------------------
+//INGREDIENT REPORTS MENU
+//----------------------
