@@ -3,7 +3,6 @@
  */
 package utils
 import models.Ingredient
-import models.BakedGoods
 
 object Utilities {
 
@@ -32,7 +31,7 @@ object Utilities {
         return (index >= 0 && index < list.size)
     }
     @JvmStatic
-    fun formatListString(notesToFormat: List<BakedGoods>): String =
+    fun formatListString(notesToFormat: List<Ingredient>): String =
         notesToFormat
             .joinToString(separator = "\n") { bakedGoods ->  "$bakedGoods" }
 @JvmStatic

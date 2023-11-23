@@ -1,5 +1,3 @@
-import controllers.BakedGoodsAPI
-import models.BakedGoods
 import mu.KotlinLogging
 import persistence.JSONSerializer
 import utils.ScannerInput.readNextDouble
@@ -9,6 +7,9 @@ import utils.ScannerInput.readNextChar
 import java.lang.System.exit
 import java.io.File
 import models.Ingredient
+import models.BakedGoods
+import controllers.BakedGoodsAPI
+
 
 private val logger = KotlinLogging.logger {}
 private val bakedGoodsAPI = BakedGoodsAPI(JSONSerializer(File("bakedgoods.json")))
@@ -27,8 +28,14 @@ fun runMenu() {
             2 -> deleteBakedGood()
             3 -> updateBakedGood()
             4 -> listBakedGoods()
-            5 -> load()
-            6 -> save()
+            5 -> addIngredientToBakedGood()
+            6 -> updateIngredientQuantityInBakedGood()
+            7 -> deleteIngredientFromBakedGood()
+            8 -> markIngredientAllergens()
+            9 -> searchBakedGoods()
+            10 -> searchIngredients()
+            11 -> load()
+            12 -> save()
             0 -> exitApp()
             else -> System.out.println("Invalid option entered: $option")
         }
@@ -46,9 +53,15 @@ fun mainMenu(): Int {
         | 1) ("Add a Baked Good")
         > 2) ("Delete a Baked Good")
         > 3) ("Update a Baked Good")
-        > 4) ("List Baked Goods")
-        > 5) ("Load Baked Goods")
-        > 6) ("Save Baked Goods")
+        > 4) ("List Baked Goods") 
+        > 5) ("Add Ingredient to a Baked Good")
+        > 6) ("Update Ingredient Quantity in a Baked Good")
+        > 7) ("Delete an Ingredient")
+        > 8) ("Mark Ingredient Allergens")
+        > 9) ("Search Baked Goods")
+        >10) ("Search Ingredients")
+        >11) ("Load Baked Goods")
+        >12) ("Save Baked Goods")
         | 0) ("Exit")
         
          > ==>> """.trimMargin(">")
@@ -140,6 +153,17 @@ fun searchBakedGoods() {
         logger.info { searchResults }
     }
 }
+fun searchIngredients() {
+    val searchByName = readNextLine("Enter the name to search by: ")
+    val searchResults = bakedGoodsAPI.searchByIngredientName(searchByName)
+
+    if (searchResults.isEmpty()) {
+        logger.info { "No ingredients found" }
+    } else {
+        logger.info { searchResults }
+    }
+}
+
 fun listAllBakedGoods() {
     println(bakedGoodsAPI.listAllBakedGoods())
 }
