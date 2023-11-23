@@ -1,6 +1,7 @@
 package controllers
 
 import models.BakedGoods
+import models.Ingredient
 import persistence.Serializer
 import utils.Utilities.formatListString
 import utils.Utilities.isValidListIndex
@@ -8,7 +9,7 @@ import utils.Utilities.isValidListIndex
 class BakedGoodsAPI(serializerType: Serializer) {
 
     private var serializer: Serializer = serializerType
-
+private var ingredientList = ArrayList<Ingredient>()
     private var bakedGoodsList = ArrayList<BakedGoods>()
 
 
@@ -63,6 +64,10 @@ class BakedGoodsAPI(serializerType: Serializer) {
     fun searchByProductName(searchString: String): String =
         formatListString(
             bakedGoodsList.filter { bakedGoods -> bakedGoods.productName.contains(searchString, ignoreCase = true) }
+        )
+    fun searchByIngredientName(searchString: String): String =
+        formatListString(
+            ingredientList.filter { ingredient -> ingredient.ingredientName.contains(searchString, ignoreCase = true) }
         )
 
     // ---------------------
