@@ -9,7 +9,8 @@ data class BakedGoods(
     var productPrice: Double,
     var productCategory: String,
     var refrigeratedOrNot: Boolean = false,
-    var ingredients: MutableList<Ingredient> = mutableListOf()) {
+    var ingredients: MutableList<Ingredient> = mutableListOf()
+) {
 
     private var lastIngredientId = 0
     private fun getIngredientId() = lastIngredientId++
@@ -44,19 +45,21 @@ data class BakedGoods(
     }
 
     fun listIngredients(): String =
-        if (ingredients.isEmpty()) "\tNO INGREDIENTS ADDED"
-        else Utilities.formatSetString(ingredients)
+        if (ingredients.isEmpty()) {
+            "\tNO INGREDIENTS ADDED"
+        } else {
+            Utilities.formatSetString(ingredients)
+        }
 
     override fun toString(): String {
         val refrigerated = if (refrigeratedOrNot) 'Y' else 'N'
         return "Product ID: $productId\n" +
-                "Product Name: $productName\n" +
-                "Product Description: $productDesc\n" +
-                "Product Price: $productPrice\n" +
-                "Product Category: $productCategory\n" +
-                "Refrigerated: $refrigerated\n" +
-                "Ingredients:\n" +
-                listIngredients()
+            "Product Name: $productName\n" +
+            "Product Description: $productDesc\n" +
+            "Product Price: $productPrice\n" +
+            "Product Category: $productCategory\n" +
+            "Refrigerated: $refrigerated\n" +
+            "Ingredients:\n" +
+            listIngredients()
     }
 }
-

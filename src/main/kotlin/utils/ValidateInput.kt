@@ -19,9 +19,9 @@ object ValidateInput {
         print(prompt)
         var input = Scanner(System.`in`).nextLine()
         do {
-            if (CategoryUtility.isValidCategory(input))
+            if (CategoryUtility.isValidCategory(input)) {
                 return input
-            else {
+            } else {
                 print("Invalid category $input.  Please try again: ")
                 input = Scanner(System.`in`).nextLine()
             }
@@ -38,9 +38,9 @@ object ValidateInput {
     fun readValidPriority(prompt: String?): Int {
         var input = readNextInt(prompt)
         do {
-            if (Utilities.validRange(input, 1, 5))
+            if (Utilities.validRange(input, 1, 5)) {
                 return input
-            else {
+            } else {
                 print("Invalid priority $input.")
                 input = readNextInt(prompt)
             }

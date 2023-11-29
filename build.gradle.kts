@@ -5,6 +5,8 @@ plugins {
     id("org.jetbrains.dokka") version "1.9.10"
     // Code coverage tool
     jacoco
+    // Plugin for Ktlint
+    id("org.jlleitschuh.gradle.ktlint") version "11.3.1"
 }
 
 group = "me.karinegassanova"
@@ -20,15 +22,15 @@ dependencies {
     implementation("io.github.microutils:kotlin-logging:3.0.5")
     implementation("org.slf4j:slf4j-simple:2.0.9")
     // dependency for JSON Persistence
-    implementation("com.thoughtworks.xstream:xstream:1.4.18")
-    implementation("org.codehaus.jettison:jettison:1.4.1")
+    implementation("com.thoughtworks.xstream:xstream:1.4.20")
+    implementation("org.codehaus.jettison:jettison:1.5.4")
     // For generating a Dokka Site from KDoc
     implementation("org.jetbrains.dokka:dokka-gradle-plugin:1.9.10")
 }
 
 tasks.test {
     useJUnitPlatform()
-    //report is always generated after tests run
+    // report is always generated after tests run
     finalizedBy(tasks.jacocoTestReport)
 }
 

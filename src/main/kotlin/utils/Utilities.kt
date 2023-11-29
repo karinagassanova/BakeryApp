@@ -30,13 +30,14 @@ object Utilities {
     fun isValidListIndex(index: Int, list: List<Any>): Boolean {
         return (index >= 0 && index < list.size)
     }
+
     @JvmStatic
     fun formatListString(notesToFormat: List<Ingredient>): String =
         notesToFormat
-            .joinToString(separator = "\n") { bakedGoods ->  "$bakedGoods" }
-@JvmStatic
-fun formatSetString(itemsToFormat: MutableList<Ingredient>): String =
-    itemsToFormat
-        .joinToString(separator = "\n") { ingredients ->  "\t$ingredients" }
+            .joinToString(separator = "\n") { bakedGoods -> "$bakedGoods" }
 
+    @JvmStatic
+    fun formatSetString(itemsToFormat: MutableList<Ingredient>): String =
+        itemsToFormat
+            .joinToString(separator = "\n") { ingredients -> "\t$ingredients" }
 }

@@ -1,20 +1,19 @@
+import controllers.BakedGoodsAPI
+import models.BakedGoods
+import models.Ingredient
 import mu.KotlinLogging
 import persistence.JSONSerializer
+import utils.ScannerInput.readNextChar
 import utils.ScannerInput.readNextDouble
 import utils.ScannerInput.readNextInt
 import utils.ScannerInput.readNextLine
-import utils.ScannerInput.readNextChar
-import java.lang.System.exit
 import java.io.File
-import models.Ingredient
-import models.BakedGoods
-import controllers.BakedGoodsAPI
-
+import kotlin.system.exitProcess
 
 private val logger = KotlinLogging.logger {}
 private val bakedGoodsAPI = BakedGoodsAPI(JSONSerializer(File("bakedgoods.json")))
 
-fun main(args: Array<String>) {
+fun main() {
     logger.info { "Starting the Bakery Application" }
     runMenu()
     logger.info { "Exiting the Bakery Application" }
@@ -22,8 +21,7 @@ fun main(args: Array<String>) {
 
 fun runMenu() {
     do {
-        val option = mainMenu()
-        when (option) {
+        when (val option = mainMenu()) {
             1 -> addBakedGood()
             2 -> deleteBakedGood()
             3 -> updateBakedGood()
@@ -38,7 +36,7 @@ fun runMenu() {
             12 -> load()
             13 -> save()
             0 -> exitApp()
-            else -> System.out.println("Invalid option entered: $option")
+            else -> println("Invalid option entered: $option")
         }
     } while (true)
 }
@@ -83,7 +81,8 @@ fun listBakedGoods() {
                   > |   5) ("List Baked Goods by Allergen")   |
 
  
-         > ==>> """.trimMargin(">"))
+         > ==>> """.trimMargin(">")
+        )
 
         when (option) {
             1 -> listAllBakedGoods()
@@ -142,14 +141,16 @@ fun addBakedGood() {
     val category = readNextLine("Enter the category of the product: ")
     val refrigeratedOrNot = readNextLine("Enter if the baked good is refrigerated or not (yes, no): ")
 
-    val isAdded = bakedGoodsAPI.add(BakedGoods(
-        productId,
-        productName,
-        productDesc,
-        productPrice.toDouble(),
-        category,
-        refrigeratedOrNot.equals("yes", ignoreCase = true)
-    ))
+    val isAdded = bakedGoodsAPI.add(
+        BakedGoods(
+            productId,
+            productName,
+            productDesc,
+            productPrice.toDouble(),
+            category,
+            refrigeratedOrNot.equals("yes", ignoreCase = true)
+        )
+    )
 
     if (isAdded) {
         println("Added Successfully")
@@ -227,7 +228,6 @@ fun deleteBakedGood() {
     logger.info { "deleteBakedGood() function invoked" }
     listAllBakedGoods()
     if (bakedGoodsAPI.numberOfBakedGoods() > 0) {
-
         val indexToDelete = readNextInt("Enter the index of the baked good to delete: ")
         val bakedGoodToDelete = bakedGoodsAPI.deleteBakedGood(indexToDelete)
         if (bakedGoodToDelete != null) {
@@ -271,7 +271,7 @@ fun markIngredientAllergens() {
     if (bakedGood != null) {
         val ingredient: Ingredient? = askUserToChooseIngredient(bakedGood)
         if (ingredient != null) {
-            var changeAllergenStatus = 'X'
+            val changeAllergenStatus: Char
             if (ingredient.allergens.isNotEmpty()) {
                 changeAllergenStatus = readNextChar("This ingredient contains allergens...do you want to remove them?")
                 if (changeAllergenStatus.equals('Y', ignoreCase = true)) {
@@ -298,9 +298,17 @@ private fun updateIngredientQuantityInBakedGood() {
     if (bakedGood != null && ingredient != null) {
         val newQuantity = readNextDouble("Enter new quantity: ")
 
-        if (bakedGood.updateIngredient(ingredient.ingredientId,
-                Ingredient(ingredient.ingredientId, ingredient.ingredientName, newQuantity,
-                    ingredient.ingredientDescription, ingredient.allergens))) {
+        if (bakedGood.updateIngredient(
+                ingredient.ingredientId,
+                Ingredient(
+                        ingredient.ingredientId,
+                        ingredient.ingredientName,
+                        newQuantity,
+                        ingredient.ingredientDescription,
+                        ingredient.allergens
+                    )
+            )
+        ) {
             println("Ingredient quantity updated successfully")
         } else {
             println("Failed to update ingredient quantity")
@@ -328,24 +336,24 @@ fun deleteIngredientFromBakedGood() {
  /*
  HELPER FUNCTIONS
   */
- private fun askUserToChooseBakedGood(): BakedGoods? {
-     listAllBakedGoods()
+private fun askUserToChooseBakedGood(): BakedGoods? {
+    listAllBakedGoods()
 
-     if (bakedGoodsAPI.numberOfBakedGoods() > 0) {
-         val productId = readNextInt("\nEnter the product ID of the baked good: ")
-         val bakedGood = bakedGoodsAPI.findBakedGoods(productId)
+    if (bakedGoodsAPI.numberOfBakedGoods() > 0) {
+        val productId = readNextInt("\nEnter the product ID of the baked good: ")
+        val bakedGood = bakedGoodsAPI.findBakedGoods(productId)
 
-         if (bakedGood != null) {
-             return bakedGood
-         } else {
-             println("Baked good with ID $productId not found.")
-         }
-     } else {
-         println("No baked goods available.")
-     }
+        if (bakedGood != null) {
+            return bakedGood
+        } else {
+            println("Baked good with ID $productId not found.")
+        }
+    } else {
+        println("No baked goods available.")
+    }
 
-     return null
- }
+    return null
+}
 
 private fun askUserToChooseIngredient(bakedGood: BakedGoods): Ingredient? {
     if (bakedGood.numberOfIngredients() > 0) {
@@ -365,9 +373,9 @@ private fun askUserToChooseIngredient(bakedGood: BakedGoods): Ingredient? {
     return null
 }
 
-fun exitApp(){
+fun exitApp() {
     println("exitApp() function invoked")
-    exit(0)
+    exitProcess(0)
 }
 fun save() {
     try {
