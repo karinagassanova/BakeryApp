@@ -1,5 +1,6 @@
 package controllers
 import models.BakedGoods
+import models.Ingredient
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
 import persistence.JSONSerializer
@@ -21,10 +22,15 @@ class BakedGoodsAPITest {
     fun setup() {
 
         blueberryMuffin = BakedGoods(1, "Blueberry Muffin", "Fluffy muffin with blueberry filling", 3.50, "Bun", false)
+        blueberryMuffin!!.addIngredient(Ingredient(1, "Blueberry Muffin Ingredients", 8.0, "Flour,Sugar,Baking Powder,Salt,Milk,Butter,Eggs,Blueberries", setOf("Gluten","Dairy")))
         sourdoughBread = BakedGoods(2, "Sourdough Bread", "Artisanal sourdough bread", 5.99, "Bread", false)
+        sourdoughBread!!.addIngredient(Ingredient(2,"Sourdough Bread Ingredients", 4.0,"Flour,Water,Starter,Salt,Olive oil",setOf("Gluten")))
         carrotCake = BakedGoods(3, "Carrot Cake", "Moist carrot cake with cream cheese frosting", 14.99, "Cake", true)
+        carrotCake!!.addIngredient(Ingredient(3,"Carrot Cake Ingredients",12.0,("Flour, Sugar,Baking Powder,Baking Soda,Salr,Cinnamon,Nutmeg,Oil,Eggs,Carrots, Walnuts or Pecans, Cream-cheese frosting"), setOf("Gluten, Nuts","Dairy")))
         cinnamonBuns = BakedGoods(4, "Cinnamon Buns", "Sweet and gooey cinnamon buns", 8.99, "Bun", true)
+        cinnamonBuns!!.addIngredient(Ingredient(4,"Cinnamon Bun Ingredients",10.0,"Flour,Sugar,Baking Powder,Baking Soda,Salt,Milk,Butter,Cinnamon,Brown Sugar,Cream-cheese", setOf("Gluten","Dairy")))
         lemonCake = BakedGoods(5, "Lemon Cake", "Zesty lemon-flavored cake", 12.99, "Cake", false)
+        lemonCake!!.addIngredient(Ingredient(5,"Lemon Cake Ingredients",10.0,"Flour,Sugar,Baking Powder,Salt,Butter,Eggs,Lemon zest, Lemon juice, Milk,Powdered Sugar", setOf("Gluten","Dairy")))
 
         populatedBakedGoods!!.add(blueberryMuffin!!)
         populatedBakedGoods!!.add(sourdoughBread!!)
@@ -90,6 +96,8 @@ class BakedGoodsAPITest {
             assertTrue(emptyBakedGoods!!.add(newBakedGood))
             assertEquals(1, emptyBakedGoods!!.numberOfBakedGoods())
             assertEquals(newBakedGood, emptyBakedGoods!!.findBakedGoods(emptyBakedGoods!!.numberOfBakedGoods() - 1))
+
+
         }
     }
 

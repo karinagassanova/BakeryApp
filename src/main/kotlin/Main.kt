@@ -302,26 +302,6 @@ fun deleteIngredientFromBakedGood() {
     }
 }
 
-fun exitApp(){
-    println("exitApp() function invoked")
-    exit(0)
-}
-fun save() {
-    try {
-        bakedGoodsAPI.store()
-    } catch (e: Exception) {
-        System.err.println("Error writing to file: $e")
-    }
-}
-
-fun load() {
-    try {
-        bakedGoodsAPI.load()
-        println("Products loaded successfully.")
-    } catch (e: Exception) {
-        println("Error reading from file: $e")
-    }
-}
  /*
  HELPER FUNCTIONS
   */
@@ -362,6 +342,23 @@ private fun askUserToChooseIngredient(bakedGood: BakedGoods): Ingredient? {
     return null
 }
 
-// ---------------------
-//INGREDIENT REPORTS MENU
-//----------------------
+fun exitApp(){
+    println("exitApp() function invoked")
+    exit(0)
+}
+fun save() {
+    try {
+        bakedGoodsAPI.store()
+    } catch (e: Exception) {
+        System.err.println("Error writing to file: $e")
+    }
+}
+
+fun load() {
+    try {
+        bakedGoodsAPI.load()
+        println("Products loaded successfully.")
+    } catch (e: Exception) {
+        println("Error reading from file: $e")
+    }
+}
