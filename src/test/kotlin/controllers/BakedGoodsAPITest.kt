@@ -100,7 +100,23 @@ class BakedGoodsAPITest {
 
         }
     }
+@Nested
+inner class SearchMethods {
+    @Test
+    fun `searchByIngredientName returns baked goods with matching ingredient name`() {
+        val searchString = "Vanilla"
+        val result = populatedBakedGoods!!.searchByIngredientName(searchString)
+        assertFalse(result.contains("no ingredients found"))
+    }
 
+    @Test
+    fun `searchBakedGoodsByAllergen returns baked goods with matching allergen`() {
+        val allergen = "Nuts"
+        val result = populatedBakedGoods!!.searchBakedGoodsByAllergen(allergen)
+        assertFalse(result.contains("no baked goods found with allergen"))
+    }
+
+}
     @Nested
     inner class ListBakedGoods {
 
@@ -148,8 +164,8 @@ class BakedGoodsAPITest {
             val result = populatedBakedGoods!!.searchByProductName(searchString)
             assertFalse(result.contains("no products found"))
         }
+
         @Test
-        // Test that the isValidCategory function returns true when the category exists.
         fun isValidCategoryTrueWhenCategoryExists() {
             Assertions.assertTrue(CategoryUtility.isValidCategory("Home"))
             Assertions.assertTrue(CategoryUtility.isValidCategory("home"))
@@ -157,12 +173,35 @@ class BakedGoodsAPITest {
         }
 
         @Test
-        // Test that the isValidCategory function returns false when the category does not exist.
         fun isValidCategoryFalseWhenCategoryDoesNotExist() {
             Assertions.assertFalse(CategoryUtility.isValidCategory("Hom"))
             Assertions.assertFalse(CategoryUtility.isValidCategory("colllege"))
             Assertions.assertFalse(CategoryUtility.isValidCategory(""))
         }
 
+        @Test
+        fun `listBakedGoodsByAllergen returns baked goods with matching allergen`() {
+            val allergen = "Dairy"
+            val result = populatedBakedGoods!!.listBakedGoodsByAllergen(allergen)
+            assertFalse(result.contains("no baked goods found with allergen"))
+        }
+
+        @Test
+        fun `listBakedGoodsByPrice returns baked goods in the specified price range`() {
+            val minPrice = 5.0
+            val maxPrice = 15.0
+            val result = populatedBakedGoods!!.listBakedGoodsByPriceRange(minPrice, maxPrice)
+            assertFalse(result.contains("no baked goods found"))
+        }
     }
-}
+        @Test
+        fun `listRefrigeratedBakedGoods returns refrigerated baked goods when ArrayList has them`() {
+            val refrigeratedBakedGoodsString = populatedBakedGoods!!.listRefrigeratedBakedGoods().lowercase()
+            assertFalse(refrigeratedBakedGoodsString.contains("no refrigerated baked goods"))
+        }
+         @Test
+         fun `listNonRefrigeratedBakedGoods returns non-refrigerated baked goods when ArrayList has them`() {
+            val nonRefrigeratedBakedGoodsString = populatedBakedGoods!!.listNonRefrigeratedBakedGoods().lowercase()
+             assertFalse(nonRefrigeratedBakedGoodsString.contains("no non-refrigerated baked goods"))
+    }
+    }
