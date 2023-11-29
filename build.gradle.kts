@@ -3,6 +3,8 @@ plugins {
     application
     // Plugin for Dokka - KDoc generating tool
     id("org.jetbrains.dokka") version "1.9.10"
+    // Code coverage tool
+    jacoco
 }
 
 group = "me.karinegassanova"
@@ -26,6 +28,8 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+    //report is always generated after tests run
+    finalizedBy(tasks.jacocoTestReport)
 }
 
 kotlin {
