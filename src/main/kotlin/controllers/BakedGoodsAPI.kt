@@ -9,9 +9,8 @@ import utils.Utilities.isValidListIndex
 class BakedGoodsAPI(serializerType: Serializer) {
 
     private var serializer: Serializer = serializerType
-private var ingredientList = ArrayList<Ingredient>()
+    private var ingredientList = ArrayList<Ingredient>()
     private var bakedGoodsList = ArrayList<BakedGoods>()
-
 
     @Throws(Exception::class)
     fun load() {
@@ -30,13 +29,17 @@ private var ingredientList = ArrayList<Ingredient>()
     fun deleteBakedGood(indexToDelete: Int): BakedGoods? {
         return if (isValidListIndex(indexToDelete, bakedGoodsList)) {
             bakedGoodsList.removeAt(indexToDelete)
-        } else null
+        } else {
+            null
+        }
     }
 
     fun findBakedGoods(index: Int): BakedGoods? {
         return if (isValidIndex(index)) {
             bakedGoodsList[index]
-        } else null
+        } else {
+            null
+        }
     }
 
     fun isValidIndex(index: Int): Boolean {
@@ -58,6 +61,7 @@ private var ingredientList = ArrayList<Ingredient>()
 
         return false
     }
+
     // ------------------------
 // SEARCHING METHODS
 // ------------------------
@@ -71,8 +75,9 @@ private var ingredientList = ArrayList<Ingredient>()
         )
 
     fun searchBakedGoodsByAllergen(allergen: String): String =
-        if (bakedGoodsList.isEmpty()) "No baked goods stored"
-        else {
+        if (bakedGoodsList.isEmpty()) {
+            "No baked goods stored"
+        } else {
             val filteredBakedGoods = bakedGoodsList.filter { bakedGood ->
                 bakedGood.ingredients.any { it.allergens.contains(allergen) }
             }
@@ -89,8 +94,9 @@ private var ingredientList = ArrayList<Ingredient>()
     // ---------------------
 
     fun listBakedGoodsByAllergen(allergen: String): String =
-        if (bakedGoodsList.isEmpty()) "No baked goods stored"
-        else {
+        if (bakedGoodsList.isEmpty()) {
+            "No baked goods stored"
+        } else {
             val filteredBakedGoods = bakedGoodsList.filter { bakedGood ->
                 bakedGood.ingredients.any { it.allergens.contains(allergen) }
             }
@@ -129,17 +135,24 @@ private var ingredientList = ArrayList<Ingredient>()
     }
 
     fun listBakedGoodsByCategory(category: String): String =
-        if (bakedGoodsList.isEmpty()) "No products stored"
-        else {
+        if (bakedGoodsList.isEmpty()) {
+            "No products stored"
+        } else {
             val filteredBakedGoods =
                 formatListString(bakedGoodsList.filter { it.productCategory.equals(category, ignoreCase = true) })
-            if (filteredBakedGoods.isBlank()) "No products with category: $category"
-            else "${numberOfBakedGoodsByCategory(category)} baked goods with category $category: $filteredBakedGoods"
+            if (filteredBakedGoods.isBlank()) {
+                "No products with category: $category"
+            } else {
+                "${numberOfBakedGoodsByCategory(category)} baked goods with category $category: $filteredBakedGoods"
+            }
         }
 
     fun listAllBakedGoods(): String =
-        if (bakedGoodsList.isEmpty()) "No baked goods stored"
-        else formatListString(bakedGoodsList)
+        if (bakedGoodsList.isEmpty()) {
+            "No baked goods stored"
+        } else {
+            formatListString(bakedGoodsList)
+        }
 
     // -------------------------
     // COUNTING METHODS FOR BAKEDGOODS ArrayList
@@ -151,20 +164,15 @@ private var ingredientList = ArrayList<Ingredient>()
         bakedGoodsList.count { it.productCategory.equals(category, ignoreCase = true) }
 }
 
-
 fun numberOfRefrigeratedBakedGoods(bakedGoodsList: List<BakedGoods>): Int {
-        return bakedGoodsList.count { it.refrigeratedOrNot }
-    }
-    fun numberOfNonRefrigeratedBakedGoods(bakedGoodsList: List<BakedGoods>): Int {
-        return bakedGoodsList.count { !it.refrigeratedOrNot }
-    }
+    return bakedGoodsList.count { it.refrigeratedOrNot }
+}
+fun numberOfNonRefrigeratedBakedGoods(bakedGoodsList: List<BakedGoods>): Int {
+    return bakedGoodsList.count { !it.refrigeratedOrNot }
+}
 
-
-    private fun formatListString(bakedGoodsToFormat: List<BakedGoods>): String =
-        bakedGoodsToFormat
-            .joinToString(separator = "\n") { bakedGoods ->
-                "${bakedGoodsToFormat.indexOf(bakedGoods)}: ${bakedGoods.toString()}"
-            }
-
-
-
+private fun formatListString(bakedGoodsToFormat: List<BakedGoods>): String =
+    bakedGoodsToFormat
+        .joinToString(separator = "\n") { bakedGoods ->
+            "${bakedGoodsToFormat.indexOf(bakedGoods)}: $bakedGoods"
+        }
