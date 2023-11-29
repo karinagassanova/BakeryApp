@@ -115,7 +115,6 @@ inner class SearchMethods {
         val result = populatedBakedGoods!!.searchBakedGoodsByAllergen(allergen)
         assertFalse(result.contains("no baked goods found with allergen"))
     }
-
 }
     @Nested
     inner class ListBakedGoods {
