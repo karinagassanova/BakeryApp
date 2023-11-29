@@ -70,9 +70,38 @@ private var ingredientList = ArrayList<Ingredient>()
             ingredientList.filter { ingredient -> ingredient.ingredientName.contains(searchString, ignoreCase = true) }
         )
 
+    fun searchBakedGoodsByAllergen(allergen: String): String =
+        if (bakedGoodsList.isEmpty()) "No baked goods stored"
+        else {
+            val filteredBakedGoods = bakedGoodsList.filter { bakedGood ->
+                bakedGood.ingredients.any { it.allergens.contains(allergen) }
+            }
+
+            if (filteredBakedGoods.isNotEmpty()) {
+                formatListString(filteredBakedGoods)
+            } else {
+                "No baked goods found with allergen: $allergen"
+            }
+        }
+
     // ---------------------
     // LISTING METHODS FOR BAKEDGOODS ArrayList
     // ---------------------
+
+    fun listBakedGoodsByAllergen(allergen: String): String =
+        if (bakedGoodsList.isEmpty()) "No baked goods stored"
+        else {
+            val filteredBakedGoods = bakedGoodsList.filter { bakedGood ->
+                bakedGood.ingredients.any { it.allergens.contains(allergen) }
+            }
+
+            if (filteredBakedGoods.isNotEmpty()) {
+                formatListString(filteredBakedGoods)
+            } else {
+                "No baked goods found with allergen: $allergen"
+            }
+        }
+
     fun listRefrigeratedBakedGoods(): String {
         val refrigeratedBakedGoods = bakedGoodsList.filter { it.refrigeratedOrNot }
         return if (refrigeratedBakedGoods.isNotEmpty()) {

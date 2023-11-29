@@ -34,8 +34,9 @@ fun runMenu() {
             8 -> markIngredientAllergens()
             9 -> searchBakedGoods()
             10 -> searchIngredients()
-            11 -> load()
-            12 -> save()
+            11 -> searchBakedGoodsByAllergen()
+            12 -> load()
+            13 -> save()
             0 -> exitApp()
             else -> System.out.println("Invalid option entered: $option")
         }
@@ -60,8 +61,9 @@ fun mainMenu(): Int {
         > 8) ("Mark Ingredient Allergens")
         > 9) ("Search Baked Goods")
         >10) ("Search Ingredients")
-        >11) ("Load Baked Goods")
-        >12) ("Save Baked Goods")
+        >11) ("Search Baked Goods by Allergens")
+        >12) ("Load Baked Goods")
+        >13) ("Save Baked Goods")
         | 0) ("Exit")
         
          > ==>> """.trimMargin(">")
@@ -78,6 +80,7 @@ fun listBakedGoods() {
                   > |   2) ("List Baked Goods by Category")   |
                   > |   3) ("List Baked Goods by Price")      |
                   > |   4) ("List Refrigerated Baked Goods")  |
+                  > |   5) ("List Baked Goods by Allergen")   |
 
  
          > ==>> """.trimMargin(">"))
@@ -87,6 +90,7 @@ fun listBakedGoods() {
             2 -> listBakedGoodsByCategory()
             3 -> listBakedGoodsByPrice()
             4 -> listRefrigeratedBakedGoods()
+            5 -> listBakedGoodsByAllergen()
             else -> println("Invalid option entered: $option")
         }
     } else {
@@ -102,6 +106,16 @@ fun listBakedGoodsByCategory() {
         println(result)
     } else {
         logger.info { "No baked goods found in category: $category" }
+    }
+}
+fun listBakedGoodsByAllergen() {
+    val allergen = readNextLine("Enter the allergen to filter by: ")
+    val result = bakedGoodsAPI.listBakedGoodsByAllergen(allergen)
+
+    if (result.isNotEmpty()) {
+        println(result)
+    } else {
+        logger.info { "No baked goods found with allergen: $allergen" }
     }
 }
 
@@ -143,7 +157,16 @@ fun addBakedGood() {
         println("Add Failed")
     }
 }
+fun searchBakedGoodsByAllergen() {
+    val allergen = readNextLine("Enter the allergen to search by: ")
+    val result = bakedGoodsAPI.searchBakedGoodsByAllergen(allergen)
 
+    if (result.isNotEmpty()) {
+        println(result)
+    } else {
+        logger.info { "No baked goods found with allergen: $allergen" }
+    }
+}
 fun searchBakedGoods() {
     val searchByName = readNextLine("Enter the title to search by: ")
     val searchResults = bakedGoodsAPI.searchByProductName(searchByName)
