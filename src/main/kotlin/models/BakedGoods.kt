@@ -10,6 +10,7 @@ data class BakedGoods(
     var productCategory: String,
     var refrigeratedOrNot: Boolean = false,
     var ingredients: MutableList<Ingredient> = mutableListOf()) {
+
     private var lastIngredientId = 0
     private fun getIngredientId() = lastIngredientId++
 
