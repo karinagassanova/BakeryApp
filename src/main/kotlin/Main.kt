@@ -42,43 +42,61 @@ fun runMenu() {
 }
 
 fun mainMenu(): Int {
+    // ANSI escape codes for text colors
+    val titleColor = "\u001B[34m"  //blue
+    val optionColor = "\u001B[35m" //purple
+    val exitColor = "\u001B[31m"   //red
     return readNextInt(
         """  
-          ("Bakery App")
+         ${colorText ("Bakery App",titleColor)}
         
               > -----------------------------------------------------------
          ("Bakery MENU")
          
-        | 1) ("Add a Baked Good")
-        > 2) ("Delete a Baked Good")
-        > 3) ("Update a Baked Good")
-        > 4) ("List Baked Goods") 
-        > 5) ("Add Ingredient to a Baked Good")
-        > 6) ("Update Ingredient Quantity in a Baked Good")
-        > 7) ("Delete an Ingredient")
-        > 8) ("Mark Ingredient Allergens")
-        > 9) ("Search Baked Goods")
-        >10) ("Search Ingredients")
-        >11) ("Search Baked Goods by Allergens")
-        >12) ("Load Baked Goods")
-        >13) ("Save Baked Goods")
-        | 0) ("Exit")
+        | 1) ${colorText("Add a Baked Good",optionColor)}
+        | 2) ${colorText("Delete a Baked Good",optionColor)}
+        | 3) ${colorText("Update a Baked Good",optionColor)}
+        | 4) ${colorText("List Baked Goods",optionColor)}
+        | 5) ${colorText("Add Ingredient to a Baked Good",optionColor)}
+        | 6) ${colorText("Update Ingredient Quantity in a Baked Good",optionColor)}
+        | 7) ${colorText("Delete an Ingredient",optionColor)}
+        | 8) ${colorText("Mark Ingredient Allergens",optionColor)}
+        | 9) ${colorText("Search Baked Goods",optionColor)}
+        | 10) ${colorText("Search Ingredients",optionColor)}
+        | 11) ${colorText("Search Baked Goods by Allergens",optionColor)}
+        | 12) ${colorText("Load Baked Goods",optionColor)}
+        | 13) ${colorText("Save Baked Goods",optionColor)}
+        | 0) ${colorText("Exit",exitColor)}
         
          > ==>> """.trimMargin(">")
     )
 }
 
+fun colorText(text: String, color: String): String {
+    /**
+     * Applies color to a given text using ANSI escape codes
+     * The text parameter is described as the text to be colorized.
+     * The reset color ensures that the color change is limited to the specified text
+     * The color parameter is described as the ANSI escape code for setting the text color
+     * The return value is defined as a colorized text string
+     */
+    val resetColor = "\u001B[0m"
+    return "$color$text$resetColor"
+}
+
 fun listBakedGoods() {
+    val titleColor = "\u001B[34m"  //blue
+    val optionColor = "\u001B[35m" //purple
     if (bakedGoodsAPI.numberOfBakedGoods() > 0) {
         val option = readNextInt(
             """
-                >        ( "LIST OF BAKED GOODS")
+                >        ${colorText( "LIST OF BAKED GOODS",titleColor)}
         
-                  > |   1) ("List ALL baked goods")           |
-                  > |   2) ("List Baked Goods by Category")   |
-                  > |   3) ("List Baked Goods by Price")      |
-                  > |   4) ("List Refrigerated Baked Goods")  |
-                  > |   5) ("List Baked Goods by Allergen")   |
+                  > |   1) ${colorText("List ALL baked goods",optionColor)}          |
+                  > |   2) ${colorText("List Baked Goods by Category",optionColor)}   |
+                  > |   3) ${colorText("List Baked Goods by Price",optionColor)}      |
+                  > |   4) ${colorText("List Refrigerated Baked Goods",optionColor)}  |
+                  > |   5) ${colorText("List Baked Goods by Allergen",optionColor)}   |
 
  
          > ==>> """.trimMargin(">")
