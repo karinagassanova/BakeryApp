@@ -43,12 +43,12 @@ fun runMenu() {
 
 fun mainMenu(): Int {
     // ANSI escape codes for text colors
-    val titleColor = "\u001B[34m"  //blue
-    val optionColor = "\u001B[35m" //purple
-    val exitColor = "\u001B[31m"   //red
+    val titleColor = "\u001B[34m" // blue
+    val optionColor = "\u001B[35m" // purple
+    val exitColor = "\u001B[31m" // red
     return readNextInt(
         """  
-         ${colorText ("Bakery App",titleColor)}
+         ${colorText("Bakery App",titleColor)}
         
               > -----------------------------------------------------------
          ("Bakery MENU")
@@ -85,12 +85,12 @@ fun colorText(text: String, color: String): String {
 }
 
 fun listBakedGoods() {
-    val titleColor = "\u001B[34m"  //blue
-    val optionColor = "\u001B[35m" //purple
+    val titleColor = "\u001B[34m" // blue
+    val optionColor = "\u001B[35m" // purple
     if (bakedGoodsAPI.numberOfBakedGoods() > 0) {
         val option = readNextInt(
             """
-                >        ${colorText( "LIST OF BAKED GOODS",titleColor)}
+                >        ${colorText("LIST OF BAKED GOODS",titleColor)}
         
                   > |   1) ${colorText("List ALL baked goods",optionColor)}          |
                   > |   2) ${colorText("List Baked Goods by Category",optionColor)}   |
