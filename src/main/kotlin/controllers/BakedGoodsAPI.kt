@@ -89,57 +89,37 @@ class BakedGoodsAPI(serializerType: Serializer) {
             }
         }
 
-    // ---------------------
-    // LISTING METHODS FOR BAKEDGOODS ArrayList
-    // ---------------------
-
     fun listBakedGoodsByAllergen(allergen: String): String =
         if (bakedGoodsList.isEmpty()) {
             "No baked goods stored"
         } else {
-            val filteredBakedGoods = bakedGoodsList.filter { bakedGood ->
-                bakedGood.ingredients.any { it.allergens.contains(allergen) }
-            }
-
-            if (filteredBakedGoods.isNotEmpty()) {
-                formatListString(filteredBakedGoods)
-            } else {
-                "No baked goods found with allergen: $allergen"
-            }
+            formatListString(bakedGoodsList.filter { bakedGood -> bakedGood.ingredients.any { it.allergens.contains(allergen) } })
         }
 
-    fun listRefrigeratedBakedGoods(): String {
-        val refrigeratedBakedGoods = bakedGoodsList.filter { it.refrigeratedOrNot }
-        return if (refrigeratedBakedGoods.isNotEmpty()) {
-            formatListString(refrigeratedBakedGoods)
-        } else {
+    fun listRefrigeratedBakedGoods(): String =
+        if (bakedGoodsList.isEmpty()) {
             "No refrigerated baked goods found."
-        }
-    }
-    fun listNonRefrigeratedBakedGoods(): String {
-        val nonRefrigeratedBakedGoods = bakedGoodsList.filter { !it.refrigeratedOrNot }
-        return if (nonRefrigeratedBakedGoods.isNotEmpty()) {
-            formatListString(nonRefrigeratedBakedGoods)
         } else {
+            formatListString(bakedGoodsList.filter { it.refrigeratedOrNot })
+        }
+
+    fun listNonRefrigeratedBakedGoods(): String =
+        if (bakedGoodsList.isEmpty()) {
             "No non-refrigerated baked goods found."
-        }
-    }
-
-    fun listBakedGoodsByPriceRange(minPrice: Double, maxPrice: Double): String {
-        val filteredBakedGoods = bakedGoodsList.filter { it.productPrice in minPrice..maxPrice }
-        return if (filteredBakedGoods.isNotEmpty()) {
-            formatListString(filteredBakedGoods)
         } else {
-            "No baked goods found in the price range: $minPrice - $maxPrice"
+            formatListString(bakedGoodsList.filter { it.refrigeratedOrNot })
         }
-    }
-
+    fun listBakedGoodsByPriceRange(minPrice: Double, maxPrice: Double): String =
+        if (bakedGoodsList.isEmpty()) {
+            "No baked goods found in the price range: $minPrice - $maxPrice"
+        } else {
+            formatListString(bakedGoodsList.filter { it.productPrice in minPrice..maxPrice })
+        }
     fun listBakedGoodsByCategory(category: String): String =
         if (bakedGoodsList.isEmpty()) {
             "No products stored"
         } else {
-            val filteredBakedGoods =
-                formatListString(bakedGoodsList.filter { it.productCategory.equals(category, ignoreCase = true) })
+            val filteredBakedGoods = formatListString(bakedGoodsList.filter { it.productCategory.equals(category, ignoreCase = true) })
             if (filteredBakedGoods.isBlank()) {
                 "No products with category: $category"
             } else {
@@ -153,24 +133,18 @@ class BakedGoodsAPI(serializerType: Serializer) {
         } else {
             formatListString(bakedGoodsList)
         }
-
-    // -------------------------
-    // COUNTING METHODS FOR BAKEDGOODS ArrayList
-    // --------------------------
     fun numberOfBakedGoods(): Int {
         return bakedGoodsList.size
     }
     fun numberOfBakedGoodsByCategory(category: String): Int =
         bakedGoodsList.count { it.productCategory.equals(category, ignoreCase = true) }
 }
-
 fun numberOfRefrigeratedBakedGoods(bakedGoodsList: List<BakedGoods>): Int {
     return bakedGoodsList.count { it.refrigeratedOrNot }
 }
 fun numberOfNonRefrigeratedBakedGoods(bakedGoodsList: List<BakedGoods>): Int {
     return bakedGoodsList.count { !it.refrigeratedOrNot }
 }
-
 private fun formatListString(bakedGoodsToFormat: List<BakedGoods>): String =
     bakedGoodsToFormat
         .joinToString(separator = "\n") { bakedGoods ->
