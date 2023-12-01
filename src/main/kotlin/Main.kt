@@ -48,10 +48,7 @@ fun mainMenu(): Int {
     val exitColor = "\u001B[31m" // red
     return readNextInt(
         """  
-         ${colorText("\uD83E\uDDC1 Bakery App \uD83C\uDF70",titleColor)}
-        
-              > -----------------------------------------------------------
-         ("Bakery MENU")
+          ${colorText("\uD83E\uDDC1 Bakery App \uD83C\uDF70",titleColor)}
          
         | 1) ${colorText("\u2795Add a Baked Good",optionColor)}
         | 2) ${colorText("\u274EDelete a Baked Good",optionColor)}
@@ -92,11 +89,11 @@ fun listBakedGoods() {
             """
                 >        ${colorText("\uD83C\uDF70LIST OF BAKED GOODS\uD83C\uDF81",titleColor)}
         
-                  > |   1) ${colorText("List ALL baked goods\uD83D\uDCCB",optionColor)}          |
-                  > |   2) ${colorText("List Baked Goods by Category",optionColor)}   |
-                  > |   3) ${colorText("List Baked Goods by Price\uD83D\uDCB0",optionColor)}      |
-                  > |   4) ${colorText("List Refrigerated Baked Goods",optionColor)}  |
-                  > |   5) ${colorText("List Baked Goods by Allergen",optionColor)}   |
+                  > |   1) ${colorText("List ALL baked goods\uD83D\uDCCB",optionColor)}        |
+                  > |   2) ${colorText("List Baked Goods by Category",optionColor)}            |
+                  > |   3) ${colorText("List Baked Goods by Price\uD83D\uDCB0",optionColor)}   |
+                  > |   4) ${colorText("List Refrigerated Baked Goods",optionColor)}           |
+                  > |   5) ${colorText("List Baked Goods by Allergen",optionColor)}            |
 
  
          > ==>> """.trimMargin(">")
