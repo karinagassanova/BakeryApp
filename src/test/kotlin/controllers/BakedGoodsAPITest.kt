@@ -119,7 +119,6 @@ class BakedGoodsAPITest {
 
     @Nested
     inner class ListBakedGoods {
-
         @Test
         fun `listRefrigeratedBakedGoods returns refrigerated baked goods when ArrayList has them`() {
             val refrigeratedBakedGoodsString = populatedBakedGoods!!.listRefrigeratedBakedGoods().lowercase()
