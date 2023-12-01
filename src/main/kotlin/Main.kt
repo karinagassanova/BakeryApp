@@ -48,25 +48,25 @@ fun mainMenu(): Int {
     val exitColor = "\u001B[31m" // red
     return readNextInt(
         """  
-         ${colorText("Bakery App",titleColor)}
+         ${colorText("\uD83E\uDDC1 Bakery App \uD83C\uDF70",titleColor)}
         
               > -----------------------------------------------------------
          ("Bakery MENU")
          
-        | 1) ${colorText("Add a Baked Good",optionColor)}
-        | 2) ${colorText("Delete a Baked Good",optionColor)}
+        | 1) ${colorText("\u2795Add a Baked Good",optionColor)}
+        | 2) ${colorText("\u274EDelete a Baked Good",optionColor)}
         | 3) ${colorText("Update a Baked Good",optionColor)}
-        | 4) ${colorText("List Baked Goods",optionColor)}
-        | 5) ${colorText("Add Ingredient to a Baked Good",optionColor)}
+        | 4) ${colorText("\uD83D\uDCDCList Baked Goods",optionColor)}
+        | 5) ${colorText("\u2705Add Ingredient to a Baked Good",optionColor)}
         | 6) ${colorText("Update Ingredient Quantity in a Baked Good",optionColor)}
-        | 7) ${colorText("Delete an Ingredient",optionColor)}
+        | 7) ${colorText("\uD83D\uDEABDelete an Ingredient",optionColor)}
         | 8) ${colorText("Mark Ingredient Allergens",optionColor)}
-        | 9) ${colorText("Search Baked Goods",optionColor)}
-        | 10) ${colorText("Search Ingredients",optionColor)}
-        | 11) ${colorText("Search Baked Goods by Allergens",optionColor)}
-        | 12) ${colorText("Load Baked Goods",optionColor)}
-        | 13) ${colorText("Save Baked Goods",optionColor)}
-        | 0) ${colorText("Exit",exitColor)}
+        | 9) ${colorText("\uD83D\uDD0DSearch Baked Goods",optionColor)}
+        | 10) ${colorText("\uD83D\uDD0DSearch Ingredients",optionColor)}
+        | 11) ${colorText("\uD83D\uDD0DSearch Baked Goods by Allergens",optionColor)}
+        | 12) ${colorText("\uD83D\uDCE5Load Baked Goods",optionColor)}
+        | 13) ${colorText("\uD83D\uDCBESave Baked Goods",optionColor)}
+        | 0) ${colorText("\uD83D\uDEAAExit",exitColor)}
         
          > ==>> """.trimMargin(">")
     )
@@ -90,11 +90,11 @@ fun listBakedGoods() {
     if (bakedGoodsAPI.numberOfBakedGoods() > 0) {
         val option = readNextInt(
             """
-                >        ${colorText("LIST OF BAKED GOODS",titleColor)}
+                >        ${colorText("\uD83C\uDF70LIST OF BAKED GOODS\uD83C\uDF81",titleColor)}
         
-                  > |   1) ${colorText("List ALL baked goods",optionColor)}          |
+                  > |   1) ${colorText("List ALL baked goods\uD83D\uDCCB",optionColor)}          |
                   > |   2) ${colorText("List Baked Goods by Category",optionColor)}   |
-                  > |   3) ${colorText("List Baked Goods by Price",optionColor)}      |
+                  > |   3) ${colorText("List Baked Goods by Price\uD83D\uDCB0",optionColor)}      |
                   > |   4) ${colorText("List Refrigerated Baked Goods",optionColor)}  |
                   > |   5) ${colorText("List Baked Goods by Allergen",optionColor)}   |
 
