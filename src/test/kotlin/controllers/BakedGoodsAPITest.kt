@@ -1,4 +1,5 @@
 package controllers
+
 import models.BakedGoods
 import models.Ingredient
 import org.junit.jupiter.api.AfterEach
@@ -7,10 +8,13 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import persistence.JSONSerializer
 import utils.CategoryUtility
+import utils.CategoryUtility.categories
+import utils.CategoryUtility.isValidCategory
 import java.io.File
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+
 class BakedGoodsAPITest {
 
     private var blueberryMuffin: BakedGoods? = null
@@ -24,15 +28,55 @@ class BakedGoodsAPITest {
     @BeforeEach
     fun setup() {
         blueberryMuffin = BakedGoods(1, "Blueberry Muffin", "Fluffy muffin with blueberry filling", 3.50, "Bun", false)
-        blueberryMuffin!!.addIngredient(Ingredient(1, "Blueberry Muffin Ingredients", 8.0, "Flour,Sugar,Baking Powder,Salt,Milk,Butter,Eggs,Blueberries", setOf("Gluten", "Dairy")))
+        blueberryMuffin!!.addIngredient(
+            Ingredient(
+                1,
+                "Blueberry Muffin Ingredients",
+                8.0,
+                "Flour,Sugar,Baking Powder,Salt,Milk,Butter,Eggs,Blueberries",
+                setOf("Gluten", "Dairy")
+            )
+        )
         sourdoughBread = BakedGoods(2, "Sourdough Bread", "Artisanal sourdough bread", 5.99, "Bread", false)
-        sourdoughBread!!.addIngredient(Ingredient(2, "Sourdough Bread Ingredients", 4.0, "Flour,Water,Starter,Salt,Olive oil", setOf("Gluten")))
+        sourdoughBread!!.addIngredient(
+            Ingredient(
+                2,
+                "Sourdough Bread Ingredients",
+                4.0,
+                "Flour,Water,Starter,Salt,Olive oil",
+                setOf("Gluten")
+            )
+        )
         carrotCake = BakedGoods(3, "Carrot Cake", "Moist carrot cake with cream cheese frosting", 14.99, "Cake", true)
-        carrotCake!!.addIngredient(Ingredient(3, "Carrot Cake Ingredients", 12.0, ("Flour, Sugar,Baking Powder,Baking Soda,Salr,Cinnamon,Nutmeg,Oil,Eggs,Carrots, Walnuts or Pecans, Cream-cheese frosting"), setOf("Gluten, Nuts", "Dairy")))
+        carrotCake!!.addIngredient(
+            Ingredient(
+                3,
+                "Carrot Cake Ingredients",
+                12.0,
+                ("Flour, Sugar,Baking Powder,Baking Soda,Salr,Cinnamon,Nutmeg,Oil,Eggs,Carrots, Walnuts or Pecans, Cream-cheese frosting"),
+                setOf("Gluten, Nuts", "Dairy")
+            )
+        )
         cinnamonBuns = BakedGoods(4, "Cinnamon Buns", "Sweet and gooey cinnamon buns", 8.99, "Bun", true)
-        cinnamonBuns!!.addIngredient(Ingredient(4, "Cinnamon Bun Ingredients", 10.0, "Flour,Sugar,Baking Powder,Baking Soda,Salt,Milk,Butter,Cinnamon,Brown Sugar,Cream-cheese", setOf("Gluten", "Dairy")))
+        cinnamonBuns!!.addIngredient(
+            Ingredient(
+                4,
+                "Cinnamon Bun Ingredients",
+                10.0,
+                "Flour,Sugar,Baking Powder,Baking Soda,Salt,Milk,Butter,Cinnamon,Brown Sugar,Cream-cheese",
+                setOf("Gluten", "Dairy")
+            )
+        )
         lemonCake = BakedGoods(5, "Lemon Cake", "Zesty lemon-flavored cake", 12.99, "Cake", false)
-        lemonCake!!.addIngredient(Ingredient(5, "Lemon Cake Ingredients", 10.0, "Flour,Sugar,Baking Powder,Salt,Butter,Eggs,Lemon zest, Lemon juice, Milk,Powdered Sugar", setOf("Gluten", "Dairy")))
+        lemonCake!!.addIngredient(
+            Ingredient(
+                5,
+                "Lemon Cake Ingredients",
+                10.0,
+                "Flour,Sugar,Baking Powder,Salt,Butter,Eggs,Lemon zest, Lemon juice, Milk,Powdered Sugar",
+                setOf("Gluten", "Dairy")
+            )
+        )
 
         populatedBakedGoods!!.add(blueberryMuffin!!)
         populatedBakedGoods!!.add(sourdoughBread!!)
@@ -204,5 +248,51 @@ class BakedGoodsAPITest {
     fun `listNonRefrigeratedBakedGoods returns non-refrigerated baked goods when ArrayList has them`() {
         val nonRefrigeratedBakedGoodsString = populatedBakedGoods!!.listNonRefrigeratedBakedGoods().lowercase()
         assertFalse(nonRefrigeratedBakedGoodsString.contains("no non-refrigerated baked goods"))
+    }
+
+    @Test
+    fun `numberOfRefrigeratedBakedGoods returns correct count`() {
+        val bakedGoodsList = listOf(
+            BakedGoods(1, "Blueberry Muffin", "", 3.50, "Bun", true),
+            BakedGoods(2, "Sourdough Bread", "", 5.99, "Bread", false),
+            BakedGoods(3, "Carrot Cake", "", 14.99, "Cake", true)
+        )
+
+        val numberOfRefrigerated = numberOfRefrigeratedBakedGoods(bakedGoodsList)
+        assertEquals(2, numberOfRefrigerated)
+    }
+
+    @Test
+    fun `numberOfNonRefrigeratedBakedGoods returns correct count`() {
+        val bakedGoodsList = listOf(
+            BakedGoods(1, "Blueberry Muffin", "", 3.50, "Bun", true),
+            BakedGoods(2, "Sourdough Bread", "", 5.99, "Bread", false),
+            BakedGoods(3, "Carrot Cake", "", 14.99, "Cake", true)
+        )
+
+        val numberOfNonRefrigerated = numberOfNonRefrigeratedBakedGoods(bakedGoodsList)
+        assertEquals(1, numberOfNonRefrigerated)
+    }
+
+    @Test
+    fun categoriesReturnsFullCategoriesSet() {
+        assertEquals(2, categories.size)
+        assertTrue(categories.contains("Home"))
+        assertTrue(categories.contains("College"))
+        assertFalse(categories.contains(""))
+    }
+
+    @Test
+    fun isValidCategoryTrueWhenCategoryExists() {
+        assertTrue(isValidCategory("Home"))
+        assertTrue(isValidCategory("home"))
+        assertTrue(isValidCategory("COLLEGE"))
+    }
+
+    @Test
+    fun isValidCategoryFalseWhenCategoryDoesNotExist() {
+        assertFalse(isValidCategory("Hom"))
+        assertFalse(isValidCategory("colllege"))
+        assertFalse(isValidCategory(""))
     }
 }
